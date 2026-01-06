@@ -4,12 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="theme-color" content="#2c3e50">
-  <title>Murshidabad Routers Status</title>
-  <link rel="icon" type="image/x-icon" href="ccr.ico">
+  <title>Murshidabad Router Monitor</title>
   
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -20,9 +18,6 @@
       --danger: #e74c3c;
       --warning: #f39c12;
       --info: #3498db;
-      --light-bg: #eef2f7;
-      --card-shadow: 0 4px 15px rgba(0,0,0,0.1);
-      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     body {
@@ -31,32 +26,8 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      position: relative;
-      overflow-x: hidden;
     }
 
-    /* Animated Background Particles */
-    .particles {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 0;
-      pointer-events: none;
-    }
-    .particle {
-      position: absolute;
-      background: rgba(255,255,255,0.15);
-      border-radius: 50%;
-      animation: float 20s infinite;
-    }
-    @keyframes float {
-      0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.3; }
-      50% { transform: translateY(-100px) rotate(180deg); opacity: 0.6; }
-    }
-
-    /* Glassmorphism Header */
     header {
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(10px);
@@ -67,7 +38,6 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      border-bottom: 1px solid rgba(255,255,255,0.3);
     }
 
     h1 { 
@@ -77,7 +47,7 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
       font-weight: 700;
-      letter-spacing: -0.5px;
+      margin-bottom: 10px;
     }
 
     .stats-bar {
@@ -111,15 +81,12 @@
       font-weight: 500;
     }
 
-    /* Main Content */
     main {
       flex: 1;
       width: 100%;
       max-width: 1200px;
       margin: 0 auto;
       padding: 20px 10px;
-      position: relative;
-      z-index: 1;
     }
 
     .section {
@@ -129,23 +96,13 @@
       padding: 25px 20px;
       margin-bottom: 20px;
       box-shadow: 0 10px 40px rgba(0,0,0,0.12);
-      border: 1px solid rgba(255,255,255,0.4);
-      transition: var(--transition);
-      animation: slideUp 0.6s ease-out backwards;
-    }
-
-    .section:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 15px 50px rgba(0,0,0,0.18);
+      animation: slideUp 0.6s ease-out;
     }
 
     @keyframes slideUp {
       from { opacity: 0; transform: translateY(30px); }
       to { opacity: 1; transform: translateY(0); }
     }
-
-    .section:nth-child(1) { animation-delay: 0.1s; }
-    .section:nth-child(2) { animation-delay: 0.2s; }
 
     .section-title { 
       font-size: 1.4rem; 
@@ -171,7 +128,7 @@
 
     .device-row { 
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
       gap: 30px;
       justify-items: center;
     }
@@ -180,8 +137,7 @@
       text-decoration: none;
       color: #333;
       text-align: center;
-      position: relative;
-      transition: var(--transition);
+      transition: all 0.3s ease;
     }
 
     .device-button {
@@ -194,8 +150,7 @@
       justify-content: center;
       align-items: center;
       box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-      transition: var(--transition);
-      overflow: visible;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       border: 3px solid transparent;
     }
 
@@ -204,28 +159,74 @@
       box-shadow: 0 15px 40px rgba(0,0,0,0.2);
     }
 
-    .device-button.online-device {
-      border-color: rgba(46, 204, 113, 0.3);
-      background: linear-gradient(135deg, #ffffff 0%, #e8f8f5 100%);
+    /* CSS Router Icons */
+    .router-icon {
+      width: 55px;
+      height: 55px;
+      position: relative;
     }
 
-    .device-button.offline-device {
-      border-color: rgba(231, 76, 60, 0.3);
-      background: linear-gradient(135deg, #ffffff 0%, #fadbd8 100%);
+    /* CCR Icon - Server style */
+    .ccr-icon {
+      background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+      border-radius: 8px;
+      position: relative;
+      box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
     }
 
-    .device-button img { 
-      width: 52px; 
-      height: 52px;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-      transition: var(--transition);
+    .ccr-icon::before {
+      content: '';
+      position: absolute;
+      top: 15%;
+      left: 10%;
+      right: 10%;
+      height: 3px;
+      background: rgba(255,255,255,0.6);
+      border-radius: 2px;
+      box-shadow: 0 10px 0 rgba(255,255,255,0.6), 0 20px 0 rgba(255,255,255,0.6);
     }
 
-    .device:hover .device-button img {
-      transform: rotate(10deg) scale(1.1);
+    .ccr-icon::after {
+      content: '⚡';
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      font-size: 16px;
     }
 
-    /* Advanced Status Indicator */
+    /* HEX Icon - Network hub style */
+    .hex-icon {
+      background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+      border-radius: 50%;
+      position: relative;
+      box-shadow: 0 4px 10px rgba(155, 89, 182, 0.3);
+    }
+
+    .hex-icon::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 12px;
+      height: 12px;
+      background: rgba(255,255,255,0.8);
+      border-radius: 50%;
+      box-shadow: 
+        -15px 0 0 -2px rgba(255,255,255,0.6),
+        15px 0 0 -2px rgba(255,255,255,0.6),
+        0 -15px 0 -2px rgba(255,255,255,0.6),
+        0 15px 0 -2px rgba(255,255,255,0.6);
+    }
+
+    .hex-icon::after {
+      content: '🔷';
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      font-size: 14px;
+    }
+
     .status-dot {
       position: absolute;
       bottom: 5px;
@@ -241,7 +242,7 @@
     .checking {
       background: var(--warning);
       box-shadow: 0 0 15px 4px var(--warning);
-      animation: pulse 1.5s infinite, rotate 2s linear infinite;
+      animation: pulse 1.5s infinite;
     }
 
     .online {
@@ -272,28 +273,16 @@
       25%, 75% { opacity: 0.4; }
     }
 
-    @keyframes rotate {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
     .device-label {
       margin-top: 10px;
       font-size: 0.85rem;
       font-weight: 600;
       color: #2c3e50;
-      transition: var(--transition);
     }
 
-    .device:hover .device-label {
-      color: #667eea;
-      transform: scale(1.05);
-    }
-
-    /* Ping Time Badge */
     .ping-time {
       position: absolute;
-      top: -8px;
+      top: -10px;
       left: 50%;
       transform: translateX(-50%);
       background: rgba(52, 152, 219, 0.95);
@@ -302,17 +291,9 @@
       padding: 3px 8px;
       border-radius: 10px;
       font-weight: 600;
-      opacity: 0;
-      transition: var(--transition);
       white-space: nowrap;
     }
 
-    .device:hover .ping-time {
-      opacity: 1;
-      top: -12px;
-    }
-
-    /* Control Panel */
     .controls {
       display: flex;
       justify-content: center;
@@ -328,28 +309,8 @@
       font-size: 0.95rem;
       font-weight: 600;
       cursor: pointer;
-      transition: var(--transition);
+      transition: all 0.3s ease;
       box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .btn::before {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      width: 0;
-      height: 0;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.3);
-      transform: translate(-50%, -50%);
-      transition: width 0.6s, height 0.6s;
-    }
-
-    .btn:active::before {
-      width: 300px;
-      height: 300px;
     }
 
     .btn-primary {
@@ -362,147 +323,23 @@
       box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
     }
 
-    .btn-secondary {
-      background: white;
-      color: #667eea;
-      border: 2px solid #667eea;
-    }
-
-    .btn-secondary:hover {
-      background: #667eea;
-      color: white;
-    }
-
-    /* Dark Mode Toggle */
-    .theme-toggle {
-      position: fixed;
-      bottom: 80px;
-      right: 20px;
-      width: 55px;
-      height: 55px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.5rem;
-      transition: var(--transition);
-    }
-
-    .theme-toggle:hover {
-      transform: scale(1.1) rotate(15deg);
-    }
-
-    /* Footer */
     footer {
       background: rgba(44, 62, 80, 0.98);
-      backdrop-filter: blur(10px);
       color: white;
       text-align: center;
       padding: 25px 15px;
       font-size: 0.9rem;
-      position: relative;
-      z-index: 1;
-      border-top: 1px solid rgba(255,255,255,0.1);
     }
 
-    footer a {
-      color: #3498db;
-      text-decoration: none;
-      font-weight: 600;
-      transition: var(--transition);
-    }
-
-    footer a:hover {
-      color: #5dade2;
-    }
-
-    /* Filter Buttons */
-    .filter-bar {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    .filter-btn {
-      padding: 8px 18px;
-      background: white;
-      border: 2px solid #e0e0e0;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: var(--transition);
-      font-weight: 600;
-    }
-
-    .filter-btn.active {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      border-color: transparent;
-    }
-
-    /* Mobile Responsive */
     @media (max-width: 768px) {
       h1 { font-size: 1.4rem; }
       .device-button { width: 80px; height: 80px; }
-      .device-button img { width: 42px; height: 42px; }
-      .device-label { font-size: 0.75rem; }
-      .section { padding: 20px 15px; }
-      .device-row { gap: 20px; grid-template-columns: repeat(auto-fit, minmax(85px, 1fr)); }
-      .stats-bar { gap: 15px; }
-      .stat-item { font-size: 0.75rem; }
-    }
-
-    /* Loading Spinner */
-    .spinner {
-      display: inline-block;
-      width: 14px;
-      height: 14px;
-      border: 2px solid rgba(255,255,255,0.3);
-      border-top-color: white;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    /* Notification Toast */
-    .toast {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      background: rgba(46, 204, 113, 0.95);
-      color: white;
-      padding: 15px 25px;
-      border-radius: 10px;
-      box-shadow: 0 6px 25px rgba(0,0,0,0.2);
-      z-index: 2000;
-      transition: var(--transition);
-      font-weight: 600;
-    }
-
-    .toast.show {
-      transform: translateX(-50%) translateY(0);
-    }
-
-    .toast.error {
-      background: rgba(231, 76, 60, 0.95);
+      .router-icon { width: 45px; height: 45px; }
+      .device-row { gap: 20px; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); }
     }
   </style>
 </head>
 <body>
-
-  <!-- Animated Background -->
-  <div class="particles" id="particles"></div>
 
   <header>
     <h1>🌐 Murshidabad Network Monitor</h1>
@@ -524,47 +361,38 @@
   </header>
 
   <main>
-    <!-- Filter Bar -->
-    <div class="filter-bar">
-      <button class="filter-btn active" onclick="filterDevices('all')">All Devices</button>
-      <button class="filter-btn" onclick="filterDevices('online')">Online Only</button>
-      <button class="filter-btn" onclick="filterDevices('offline')">Offline Only</button>
-      <button class="filter-btn" onclick="filterDevices('ccr')">CCR Only</button>
-      <button class="filter-btn" onclick="filterDevices('hex')">HEX Only</button>
-    </div>
-
     <!-- CCR Section -->
-    <div class="section" data-type="ccr">
+    <div class="section">
       <div class="section-title">⚡ CCR Core Routers</div>
       <div class="device-row">
-        <a href="http://172.31.236.106" target="_blank" class="device" data-device-type="ccr">
+        <a href="http://172.31.236.106" target="_blank" class="device">
           <div class="device-button">
             <div class="ping-time">⚡ -- ms</div>
-            <img src="ccr.png" alt="CCR">
+            <div class="router-icon ccr-icon"></div>
             <div class="status-dot checking"></div>
           </div>
           <div class="device-label">Baharampur-CCR-1</div>
         </a>
-        <a href="http://172.31.236.191" target="_blank" class="device" data-device-type="ccr">
+        <a href="http://172.31.236.191" target="_blank" class="device">
           <div class="device-button">
             <div class="ping-time">⚡ -- ms</div>
-            <img src="ccr.png" alt="CCR">
+            <div class="router-icon ccr-icon"></div>
             <div class="status-dot checking"></div>
           </div>
           <div class="device-label">Baharampur-CCR-2</div>
         </a>
-        <a href="http://172.31.236.195" target="_blank" class="device" data-device-type="ccr">
+        <a href="http://172.31.236.195" target="_blank" class="device">
           <div class="device-button">
             <div class="ping-time">⚡ -- ms</div>
-            <img src="ccr.png" alt="CCR">
+            <div class="router-icon ccr-icon"></div>
             <div class="status-dot checking"></div>
           </div>
           <div class="device-label">Baharampur-CCR-3</div>
         </a>
-        <a href="http://10.10.251.178" target="_blank" class="device" data-device-type="ccr">
+        <a href="http://10.10.251.178" target="_blank" class="device">
           <div class="device-button">
             <div class="ping-time">⚡ -- ms</div>
-            <img src="ccr.png" alt="CCR">
+            <div class="router-icon ccr-icon"></div>
             <div class="status-dot checking"></div>
           </div>
           <div class="device-label">Dhuliyan CCR</div>
@@ -573,61 +401,61 @@
     </div>
 
     <!-- HEX Section -->
-    <div class="section" data-type="hex">
+    <div class="section">
       <div class="section-title">🔷 HEX Distribution Routers</div>
       <div class="device-row">
-        <a href="http://10.10.250.182" target="_blank" class="device" data-device-type="hex">
+        <a href="http://10.10.250.182" target="_blank" class="device">
           <div class="device-button">
             <div class="ping-time">⚡ -- ms</div>
-            <img src="hex.png" alt="HEX">
+            <div class="router-icon hex-icon"></div>
             <div class="status-dot checking"></div>
           </div>
           <div class="device-label">Bharatpur HEX</div>
         </a>
-        <a href="http://10.10.252.90" target="_blank" class="device" data-device-type="hex">
+        <a href="http://10.10.252.90" target="_blank" class="device">
           <div class="device-button">
             <div class="ping-time">⚡ -- ms</div>
-            <img src="hex.png" alt="HEX">
+            <div class="router-icon hex-icon"></div>
             <div class="status-dot checking"></div>
           </div>
           <div class="device-label">Chhabghati HEX</div>
         </a>
-        <a href="http://10.10.253.18" target="_blank" class="device" data-device-type="hex">
+        <a href="http://10.10.253.18" target="_blank" class="device">
           <div class="device-button">
             <div class="ping-time">⚡ -- ms</div>
-            <img src="hex.png" alt="HEX">
+            <div class="router-icon hex-icon"></div>
             <div class="status-dot checking"></div>
           </div>
           <div class="device-label">Salar-Prasadpur</div>
         </a>
-        <a href="http://10.10.246.182" target="_blank" class="device" data-device-type="hex">
+        <a href="http://10.10.246.182" target="_blank" class="device">
           <div class="device-button">
             <div class="ping-time">⚡ -- ms</div>
-            <img src="hex.png" alt="HEX">
+            <div class="router-icon hex-icon"></div>
             <div class="status-dot checking"></div>
           </div>
           <div class="device-label">Sekhpara HEX</div>
         </a>
-        <a href="http://172.31.236.211" target="_blank" class="device" data-device-type="hex">
+        <a href="http://172.31.236.211" target="_blank" class="device">
           <div class="device-button">
             <div class="ping-time">⚡ -- ms</div>
-            <img src="hex.png" alt="HEX">
+            <div class="router-icon hex-icon"></div>
             <div class="status-dot checking"></div>
           </div>
           <div class="device-label">Sanmatinagar</div>
         </a>
-        <a href="http://172.31.236.38" target="_blank" class="device" data-device-type="hex">
+        <a href="http://172.31.236.38" target="_blank" class="device">
           <div class="device-button">
             <div class="ping-time">⚡ -- ms</div>
-            <img src="hex.png" alt="HEX">
+            <div class="router-icon hex-icon"></div>
             <div class="status-dot checking"></div>
           </div>
           <div class="device-label">MinarCable</div>
         </a>
-        <a href="http://172.31.236.126" target="_blank" class="device" data-device-type="hex">
+        <a href="http://172.31.236.126" target="_blank" class="device">
           <div class="device-button">
             <div class="ping-time">⚡ -- ms</div>
-            <img src="hex.png" alt="HEX">
+            <div class="router-icon hex-icon"></div>
             <div class="status-dot checking"></div>
           </div>
           <div class="device-label">Palsunda HEX</div>
@@ -635,61 +463,23 @@
       </div>
     </div>
 
-    <!-- Controls -->
     <div class="controls">
       <button class="btn btn-primary" onclick="checkAll()">
         <span id="refreshText">🔄 Refresh Status</span>
       </button>
-      <button class="btn btn-secondary" onclick="exportReport()">
-        📊 Export Report
-      </button>
     </div>
   </main>
 
-  <!-- Theme Toggle -->
-  <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">🌓</button>
-
-  <!-- Toast Notification -->
-  <div class="toast" id="toast"></div>
-
   <footer>
-    © 2025 <a href="#">INDINET SERVICE PRIVATE LIMITED</a><br>
+    © 2025 INDINET SERVICE PRIVATE LIMITED<br>
     <small>Auto-refresh: Every 45 seconds | Network Monitor v2.0</small>
   </footer>
 
 <script>
-  let isDarkMode = false;
-  let currentFilter = 'all';
   let deviceStats = { online: 0, offline: 0, total: 11 };
 
-  // Create animated particles
-  function createParticles() {
-    const container = document.getElementById('particles');
-    for (let i = 0; i < 15; i++) {
-      const particle = document.createElement('div');
-      particle.className = 'particle';
-      particle.style.width = Math.random() * 60 + 20 + 'px';
-      particle.style.height = particle.style.width;
-      particle.style.left = Math.random() * 100 + '%';
-      particle.style.top = Math.random() * 100 + '%';
-      particle.style.animationDelay = Math.random() * 20 + 's';
-      particle.style.animationDuration = Math.random() * 10 + 15 + 's';
-      container.appendChild(particle);
-    }
-  }
-
-  // Show toast notification
-  function showToast(message, isError = false) {
-    const toast = document.getElementById('toast');
-    toast.textContent = message;
-    toast.className = 'toast show' + (isError ? ' error' : '');
-    setTimeout(() => toast.classList.remove('show'), 3000);
-  }
-
-  // Check device status with ping measurement
   function checkStatus(url, device) {
     const dot = device.querySelector('.status-dot');
-    const button = device.querySelector('.device-button');
     const pingDisplay = device.querySelector('.ping-time');
     const startTime = Date.now();
 
@@ -706,19 +496,13 @@
       const pingTime = Date.now() - startTime;
       dot.classList.remove('checking', 'offline');
       dot.classList.add('online');
-      button.classList.add('online-device');
-      button.classList.remove('offline-device');
       pingDisplay.textContent = `⚡ ${pingTime}ms`;
-      device.dataset.status = 'online';
       deviceStats.online++;
     })
     .catch(() => {
       dot.classList.remove('checking', 'online');
       dot.classList.add('offline');
-      button.classList.add('offline-device');
-      button.classList.remove('online-device');
       pingDisplay.textContent = '❌ Offline';
-      device.dataset.status = 'offline';
       deviceStats.offline++;
     })
     .finally(() => {
@@ -727,115 +511,32 @@
     });
   }
 
-  // Update statistics
   function updateStats() {
     document.getElementById('onlineCount').textContent = deviceStats.online;
     document.getElementById('offlineCount').textContent = deviceStats.offline;
   }
 
-  // Check all devices
   function checkAll() {
     deviceStats = { online: 0, offline: 0, total: 11 };
-    const refreshBtn = document.getElementById('refreshText');
-    refreshBtn.innerHTML = '<span class="spinner"></span> Checking...';
-    
     document.getElementById('lastUpdate').textContent = 'Checking devices...';
     
     document.querySelectorAll('.device').forEach(device => {
       const url = device.getAttribute('href');
       const dot = device.querySelector('.status-dot');
-      const button = device.querySelector('.device-button');
       dot.classList.remove('online', 'offline');
       dot.classList.add('checking');
-      button.classList.remove('online-device', 'offline-device');
       checkStatus(url, device);
     });
 
     setTimeout(() => {
-      refreshBtn.innerHTML = '🔄 Refresh Status';
       document.getElementById('lastUpdate').textContent = 
-        'Last update: ' + new Date().toLocaleString('en-IN', { 
-          hour: '2-digit', 
-          minute: '2-digit',
-          second: '2-digit'
-        });
-      showToast('✅ Status updated successfully!');
+        'Last update: ' + new Date().toLocaleTimeString('en-IN');
     }, 5500);
   }
 
-  // Filter devices
-  function filterDevices(type) {
-    currentFilter = type;
-    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-
-    document.querySelectorAll('.device').forEach(device => {
-      const deviceType = device.dataset.deviceType;
-      const deviceStatus = device.dataset.status;
-
-      if (type === 'all') {
-        device.style.display = 'block';
-      } else if (type === 'online' || type === 'offline') {
-        device.style.display = deviceStatus === type ? 'block' : 'none';
-      } else {
-        device.style.display = deviceType === type ? 'block' : 'none';
-      }
-    });
-
-    // Hide empty sections
-    document.querySelectorAll('.section').forEach(section => {
-      const visibleDevices = section.querySelectorAll('.device[style="display: block;"], .device:not([style*="display"])');
-      section.style.display = visibleDevices.length > 0 ? 'block' : 'none';
-    });
-  }
-
-  // Dark mode toggle
-  function toggleTheme() {
-    isDarkMode = !isDarkMode;
-    document.body.style.background = isDarkMode 
-      ? 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)'
-      : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-    
-    showToast(isDarkMode ? '🌙 Dark mode enabled' : '☀️ Light mode enabled');
-  }
-
-  // Export status report
-  function exportReport() {
-    const report = {
-      timestamp: new Date().toISOString(),
-      stats: deviceStats,
-      devices: []
-    };
-
-    document.querySelectorAll('.device').forEach(device => {
-      const name = device.querySelector('.device-label').textContent;
-      const status = device.dataset.status || 'unknown';
-      const ping = device.querySelector('.ping-time').textContent;
-      report.devices.push({ name, status, ping });
-    });
-
-    const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `network-report-${Date.now()}.json`;
-    a.click();
-    
-    showToast('📥 Report downloaded!');
-  }
-
-  // Initialize
-  createParticles();
   checkAll();
   setInterval(checkAll, 45000);
-
-  // Service Worker for offline support (optional)
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js').catch(() => {});
-  }
 </script>
 
 </body>
-
 </html>
-
